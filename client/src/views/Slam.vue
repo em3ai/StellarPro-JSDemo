@@ -115,7 +115,7 @@ export default {
     loadAssets () {
       // load mesh
       // const url = 'http://192.168.1.62:8080/scene.gltf'
-      const url = 'http://localhost:8080/scene.gltf'
+      const url = `${window.location.origin}/scene.gltf`
       const that = this
       SceneLoader.ImportMeshAsync(null, url, null, this.scene).then(result => {
         console.log(result, 'd')
