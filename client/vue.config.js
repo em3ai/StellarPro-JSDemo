@@ -30,6 +30,7 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
+    port: 10000
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
