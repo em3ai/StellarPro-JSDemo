@@ -83,7 +83,7 @@ def start():
     os.chdir(ori_cwd)
     print('恢复回原工作目录:', os.getcwd())
 
-    pDLL.Start(c_char_p(b'/usr/local/em3/dlmodels/yolov5n.engine'), c_char_p(b'/usr/local/em3/dlmodels/KNet.engine'), c_char_p(b'/home/em3/adularia/data/stereo_AG10103.json'))
+    pDLL.Start(c_char_p(b'/usr/local/em3/dlmodels/yolov5n.engine'), c_char_p(b'/usr/local/em3/dlmodels/KNet.engine'), c_char_p(b'/usr/local/em3/calibration/stereo_calibration.json'))
 
 
 def get_data():

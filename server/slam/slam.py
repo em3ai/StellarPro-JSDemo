@@ -24,7 +24,7 @@ def start():
     os.chdir(ori_cwd)
     print('恢复回原工作目录:', os.getcwd())
 
-    pDLL.Start(c_char_p(b'/home/em3/adularia/data/stereo_AG10103.json'), c_char_p(b''))
+    pDLL.Start(c_char_p(b'/usr/local/em3/calibration/stereo_calibration.json'), c_char_p(b''))
 
 
 def get_data():
