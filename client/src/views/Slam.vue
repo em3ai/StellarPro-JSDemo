@@ -357,7 +357,8 @@ export default {
     // 连接后端服务，获取眼镜 空间坐标和四元数信息
     initSocket () {
       const _that = this
-      _that.socket = new WebSocket('ws:192.168.1.246:56789/slam')
+      // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
+      _that.socket = new WebSocket(`ws:${window.location.hostname}:56789/slam`)
       _that.socket.addEventListener('open', function (event) {
         _that.socket.send('Hello')
       })
