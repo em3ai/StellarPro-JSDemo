@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-06-18 09:44:25
+ * @LastEditTime: 2022-06-23 17:06:03
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -153,14 +153,12 @@ export default {
         leftOriginTwo = '',
         leftLocalMeshDirection = '',
         leftLocalMeshOrigin = '',
-        leftLength = '',
         leftRayInfo = '',
         rightDistance = '',
         rightOriginOne = '',
         rightOriginTwo = '',
         rightLocalMeshDirection = '',
         rightLocalMeshOrigin = '',
-        rightLength = '',
         rightRayInfo = '',
         leftHand = false, // 左手射线是否碰到物体
         rightHand = false // 右手射线是否碰到物体
@@ -179,14 +177,10 @@ export default {
             leftOriginOne = _that.handInfo.left_info.keypoints[0]
             leftOriginTwo = _that.handInfo.left_info.keypoints[8]
             leftRayHelper && leftRayHelper.dispose()
-            leftRay = new BABYLON.Ray();
-            leftRayHelper = new BABYLON.RayHelper(leftRay);
-            
             leftLocalMeshDirection = new BABYLON.Vector3(leftOriginTwo.x - leftOriginOne.x, leftOriginTwo.y - leftOriginOne.y, leftOriginTwo.z - leftOriginOne.z)
-            leftLocalMeshOrigin = new BABYLON.Vector3(leftOriginTwo.x, leftOriginTwo.y, leftOriginTwo.z)
-            leftLength = 200
-            
-            leftRayHelper.attachToMesh(handLeft[8], leftLocalMeshDirection, leftLocalMeshOrigin, leftLength)
+            leftLocalMeshOrigin = new BABYLON.Vector3(leftOriginTwo.x * 10, leftOriginTwo.y * 10, leftOriginTwo.z * 10 + 0.2)
+            leftRay = new BABYLON.Ray(leftLocalMeshOrigin, leftLocalMeshDirection, 200)
+            leftRayHelper = new BABYLON.RayHelper(leftRay)
             leftRayHelper.show(scene)
             // 3.1 判断射线碰到球体 ==> 改变球体颜色
             leftRayInfo = scene.pickWithRay(leftRay)
@@ -257,14 +251,10 @@ export default {
             rightOriginOne = _that.handInfo.right_info.keypoints[0]
             rightOriginTwo = _that.handInfo.right_info.keypoints[8]
             rightRayHelper && rightRayHelper.dispose()
-            rightRay = new BABYLON.Ray();
-            rightRayHelper = new BABYLON.RayHelper(rightRay);
-            
             rightLocalMeshDirection = new BABYLON.Vector3(rightOriginTwo.x - rightOriginOne.x, rightOriginTwo.y - rightOriginOne.y, rightOriginTwo.z - rightOriginOne.z)
-            rightLocalMeshOrigin = new BABYLON.Vector3(rightOriginTwo.x, rightOriginTwo.y, rightOriginTwo.z)
-            rightLength = 200
-            
-            rightRayHelper.attachToMesh(handRight[8], rightLocalMeshDirection, rightLocalMeshOrigin, rightLength)
+            rightLocalMeshOrigin = new BABYLON.Vector3(rightOriginTwo.x * 10, rightOriginTwo.y * 10, rightOriginTwo.z * 10 + 0.2)
+            rightRay = new BABYLON.Ray(rightLocalMeshOrigin, rightLocalMeshDirection, 200)
+            rightRayHelper = new BABYLON.RayHelper(rightRay)
             rightRayHelper.show(scene)
             // 3.1 判断射线碰到球体 ==> 改变球体颜色
             rightRayInfo = scene.pickWithRay(rightRay)
