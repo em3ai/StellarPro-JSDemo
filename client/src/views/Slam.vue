@@ -183,6 +183,7 @@ export default {
       const realtiveVec = CoT.position.subtract(this.camera.position);
       this.camera.position = BABYLON.Vector3.Zero()
       CoT.position = realtiveVec
+      CoT.rotation.y = 1 // 调整模型角度
       this.meshes.forEach(mesh => {
         mesh.setParent(null)
       })
