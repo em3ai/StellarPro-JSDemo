@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-06-28 10:58:43
+ * @LastEditTime: 2022-06-28 18:22:38
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -19,7 +19,23 @@ export default {
   data () {
     return {
       handInfo: '',
-      scene: null
+      scene: null,
+      model: '2d',
+      sphere2: null,
+      freeCamera: null,
+      VRCamera:null,
+      camera: null
+    }
+  },
+   watch: {
+    // 2D / 3D模式切换
+    'model': function (newVal, oldVal) {
+      if (newVal && newVal ==='3d') {
+        this.scene.activeCamera = this.VRCamera
+      } else if (newVal && newVal ==='2d') {
+        this.scene.activeCamera = this.freeCamera
+        this.camera.lockedTarget = this.sphere2
+      }
     }
   },
   components: {
@@ -27,6 +43,17 @@ export default {
   mounted () {
     this.initSocket()
     this.initBabylon()
+    const _that = this
+    // 判断2D / 3D
+    setInterval(() => {
+      console.log(_that)
+      if (window.screen.width === 1920) {
+        _that.model = '2d'
+      } else if (window.screen.width === 3840) {
+        _that.model = '3d'
+      }
+    }, 3000)
+    
   },
   methods: {
     initBabylon () {
@@ -40,12 +67,14 @@ export default {
         // Create a basic BJS Scene object
         const scene = new BABYLON.Scene(engine)
         // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-        const camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene)
-        console.log(camera.position, 'camera.position---')
-        // Target the camera to scene origin
-        camera.setTarget(BABYLON.Vector3.Zero())
-        // Attach the camera to the canvas
-        camera.attachControl(canvas, false)
+        _that.freeCamera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene)
+        // VRCamera
+        _that.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("", new BABYLON.Vector3(0, 5, -10), scene, undefined)
+        _that.camera = _that.freeCamera
+        // Target the _that.camera to scene origin
+        _that.camera.setTarget(BABYLON.Vector3.Zero())
+        // Attach the _that.camera to the canvas
+        _that.camera.attachControl(canvas, false)
         // 球体
         const sphere = BABYLON.MeshBuilder.CreateSphere('sphere1', { segments: 16, diameter: 4, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
         sphere.position.y = 4
@@ -57,8 +86,8 @@ export default {
         sphere.overlayAlpha = 0.2
         console.log(sphere.position, 'sphere.position===---')
         // 通过 创建个隐形球，相机朝向这个球
-        const sphere2 = BABYLON.MeshBuilder.CreateSphere('sphere2', { segments: 6, diameter: 0.0000001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
-        camera.lockedTarget = sphere2
+        _that.sphere2 = BABYLON.MeshBuilder.CreateSphere('sphere2', { segments: 6, diameter: 0.0000001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
+        _that.camera.lockedTarget = _that.sphere2
 
         // 创建 锥体
         const disc = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
@@ -349,6 +378,7 @@ export default {
 .home {
   width: 100vw;
   height: 100vh;
+  background: #000;
 }
 canvas {
   width: 100%;
