@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-06-23 17:06:03
+ * @LastEditTime: 2022-06-28 10:58:43
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -335,7 +335,7 @@ export default {
       // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
       const socket = new WebSocket(`ws:${window.location.hostname}:56789/handtracking`)
       socket.addEventListener('open', function (event) {
-        socket.send('Hello')
+        // socket.send('Hello')
       })
       socket.addEventListener('message', function (event) {
         _that.handInfo = event.data && JSON.parse(event.data)

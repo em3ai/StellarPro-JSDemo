@@ -361,7 +361,7 @@ export default {
       // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
       _that.socket = new WebSocket(`ws:${window.location.hostname}:56789/slam`)
       _that.socket.addEventListener('open', function (event) {
-        _that.socket.send('Hello')
+        // _that.socket.send('Hello')
       })
       _that.socket.addEventListener('message', function (event) {
         _that.cameraData = event.data && JSON.parse(event.data)
