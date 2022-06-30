@@ -29,15 +29,42 @@ export default {
       explosionStatus: false,
       camera: null,
       cameraData: null,
-      socket: null
+      socket: null,
+      freeCamera: null,
+      VRCamera: null,
+      model: '2d',
       // cameraData: { position: [-0.0, 0.0, -0.0], rotation: [-0.0, 0.0, -0.0, 0.0] }
       // {"position": [-0.0, 0.0, -0.0], "rotation": [-0.0, 0.0, -0.0, 0.0]}
+      Timer: null
+    }
+  },
+  watch: {
+    // 2D / 3D模式切换
+    model: function (newVal, oldVal) {
+      if (newVal && newVal === '3d') {
+        this.scene.activeCamera = this.VRCamera
+      } else if (newVal && newVal === '2d') {
+        this.scene.activeCamera = this.freeCamera
+      }
     }
   },
 
   mounted () {
     this.initBabylon()
     this.initSocket()
+    let _that = this
+    // 判断2D / 3D
+    this.Timer = setInterval(() => {
+      console.log(_that)
+      if (window.screen.width === 1920) {
+        _that.model = '2d'
+      } else if (window.screen.width === 3840) {
+        _that.model = '3d'
+      }
+    }, 2000)
+  },
+  beforeDestroy () {
+    this.Timer && clearInterval(this.Timer)
   },
   methods: {
     // 同步眼镜数据到camera
@@ -152,9 +179,11 @@ export default {
           worldCenter.copyFromFloats(0, 0, 0);
       }
     
-      var freeCamera = new BABYLON.FreeCamera("default camera", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene);
+      this.freeCamera = new BABYLON.FreeCamera("default camera", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene);
+      // VRCamera
+      this.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene, undefined);
       // freeCamera.setTarget(worldCenter);
-      this.camera = freeCamera;
+      this.camera = this.freeCamera;
 
       console.log(`worldC: ${worldCenter.x}, ${worldCenter.y}, ${worldCenter.z}`)
   
@@ -387,6 +416,7 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  background: #000;
   .explosion-btn {
     position: absolute;
     z-index: 999;

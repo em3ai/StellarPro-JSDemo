@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-06-28 18:22:38
+ * @LastEditTime: 2022-06-30 14:08:12
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -23,16 +23,17 @@ export default {
       model: '2d',
       sphere2: null,
       freeCamera: null,
-      VRCamera:null,
-      camera: null
+      VRCamera: null,
+      camera: null,
+      Timer: null
     }
   },
    watch: {
     // 2D / 3D模式切换
-    'model': function (newVal, oldVal) {
-      if (newVal && newVal ==='3d') {
+    model: function (newVal, oldVal) {
+      if (newVal && newVal === '3d') {
         this.scene.activeCamera = this.VRCamera
-      } else if (newVal && newVal ==='2d') {
+      } else if (newVal && newVal === '2d') {
         this.scene.activeCamera = this.freeCamera
         this.camera.lockedTarget = this.sphere2
       }
@@ -45,15 +46,17 @@ export default {
     this.initBabylon()
     const _that = this
     // 判断2D / 3D
-    setInterval(() => {
+    this.Timer = setInterval(() => {
       console.log(_that)
       if (window.screen.width === 1920) {
         _that.model = '2d'
       } else if (window.screen.width === 3840) {
         _that.model = '3d'
       }
-    }, 3000)
-    
+    }, 2000)
+  },
+  beforeDestroy () {
+    this.Timer && clearInterval(this.Timer)
   },
   methods: {
     initBabylon () {
