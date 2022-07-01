@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-06-30 14:08:12
+ * @LastEditTime: 2022-07-01 13:51:41
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -25,7 +25,8 @@ export default {
       freeCamera: null,
       VRCamera: null,
       camera: null,
-      Timer: null
+      Timer: null,
+      sphere: null
     }
   },
    watch: {
@@ -33,9 +34,21 @@ export default {
     model: function (newVal, oldVal) {
       if (newVal && newVal === '3d') {
         this.scene.activeCamera = this.VRCamera
+        this.sphere.position.y = 10
+        this.sphere.position.z = 4
+        this.disc.position.x = -3
+        this.disc.position.z = 4
+        this.disc1.position.x = 3
+        this.disc1.position.z = 4
       } else if (newVal && newVal === '2d') {
         this.scene.activeCamera = this.freeCamera
         this.camera.lockedTarget = this.sphere2
+        this.sphere.position.y = 4
+        this.sphere.position.z = 10
+        this.disc.position.x = -2
+        this.disc.position.z = 10
+        this.disc1.position.x = 2
+        this.disc1.position.z = 10
       }
     }
   },
@@ -47,7 +60,6 @@ export default {
     const _that = this
     // 判断2D / 3D
     this.Timer = setInterval(() => {
-      console.log(_that)
       if (window.screen.width === 1920) {
         _that.model = '2d'
       } else if (window.screen.width === 3840) {
@@ -79,40 +91,40 @@ export default {
         // Attach the _that.camera to the canvas
         _that.camera.attachControl(canvas, false)
         // 球体
-        const sphere = BABYLON.MeshBuilder.CreateSphere('sphere1', { segments: 16, diameter: 4, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
-        sphere.position.y = 4
-        sphere.position.z = 10
+         _that.sphere = BABYLON.MeshBuilder.CreateSphere('sphere1', { segments: 16, diameter: 4, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
+        _that.sphere.position.y = 4
+        _that.sphere.position.z = 10
 
         // 设置颜色
-        sphere.renderOverlay = true
-        sphere.overlayColor = new BABYLON.Color3.Blue()
-        sphere.overlayAlpha = 0.2
-        console.log(sphere.position, 'sphere.position===---')
+        _that.sphere.renderOverlay = true
+        _that.sphere.overlayColor = new BABYLON.Color3.Blue()
+        _that.sphere.overlayAlpha = 0.2
+        console.log(_that.sphere.position, '_that.sphere.position===---')
         // 通过 创建个隐形球，相机朝向这个球
         _that.sphere2 = BABYLON.MeshBuilder.CreateSphere('sphere2', { segments: 6, diameter: 0.0000001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
         _that.camera.lockedTarget = _that.sphere2
 
         // 创建 锥体
-        const disc = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-        disc.position.x = -2
-        disc.position.z = 10
+        _that.disc = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
+        _that.disc.position.x = -2
+        _that.disc.position.z = 10
         // 设置颜色
-        disc.renderOverlay = true
-        disc.overlayColor = new BABYLON.Color3.Red()
-        disc.overlayAlpha = 0.4
+        _that.disc.renderOverlay = true
+        _that.disc.overlayColor = new BABYLON.Color3.Red()
+        _that.disc.overlayAlpha = 0.4
 
-        const disc1 = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-        disc1.position.x = 2
-        disc1.position.z = 10
+        _that.disc1 = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
+        _that.disc1.position.x = 2
+        _that.disc1.position.z = 10
 
-        disc1.renderOverlay = true
-        disc1.overlayAlpha = 0.4
+        _that.disc1.renderOverlay = true
+        _that.disc1.overlayAlpha = 0.4
         // 自传
         // var cylinderRotation = 0
         // scene.registerBeforeRender(() => {
         //   cylinderRotation += 0.01
-        //   disc.rotation.y = cylinderRotation
-        //   disc1.rotation.y = cylinderRotation
+        //   _that.disc.rotation.y = cylinderRotation
+        //   _that.disc1.rotation.y = cylinderRotation
         //   if (cylinderRotation > 2 * Math.PI) {
         //     cylinderRotation = 0
         //   }
@@ -219,14 +231,22 @@ export default {
             leftDistance = Math.sqrt(Math.abs((handLeft[4].position.x - handLeft[8].position.x) * (handLeft[4].position.x - handLeft[8].position.x) + (handLeft[4].position.y - handLeft[8].position.y) + (handLeft[4].position.z - handLeft[8].position.z)))
             if (leftRayInfo && leftRayInfo.pickedMesh && leftRayInfo.pickedMesh.id === 'sphere1') {
               !leftHand && (leftHand = true)
-              sphere.overlayColor = new BABYLON.Color3.Yellow()
+              _that.sphere.overlayColor = new BABYLON.Color3.Yellow()
               if (leftDistance < 0.4 && leftTouch) {
                 console.log('创建呀------')
                 leftTouch = false
-                const newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-                newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
-                newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) - 2
-                newCylinder.position.z = Math.random() * 10 + 5
+                var newCylinder = ''
+                if (_that.model) {
+                  newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 3, diameter: 3, diameterTop: 0, tessellation: 16 })
+                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1) + 2
+                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) + 2
+                  newCylinder.position.z = Math.random() * 5 + 5
+                } else {
+                  newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
+                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
+                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) - 2
+                  newCylinder.position.z = Math.random() * 10 + 5
+                }
                 // 设置颜色
                 newCylinder.renderOverlay = true
                 newCylinder.overlayAlpha = 0.4
@@ -254,7 +274,7 @@ export default {
               // 3.3 射线没有碰到物体时， 物体恢复原色
               leftHand && (leftHand = false)
               if (!rightHand) {
-                sphere.overlayColor = new BABYLON.Color3.Blue()
+                _that.sphere.overlayColor = new BABYLON.Color3.Blue()
                 scene.rootNodes.forEach(item => {
                   if (item.id === 'cylinder') {
                     // 圆锥体恢复颜色
@@ -293,15 +313,22 @@ export default {
             rightDistance = Math.sqrt(Math.abs((handRight[4].position.x - handRight[8].position.x) * (handRight[4].position.x - handRight[8].position.x) + (handRight[4].position.y - handRight[8].position.y) + (handRight[4].position.z - handRight[8].position.z)))
             if (rightRayInfo && rightRayInfo.pickedMesh && rightRayInfo.pickedMesh.id === 'sphere1') {
               !rightHand && (rightHand = true)
-              sphere.overlayColor = new BABYLON.Color3.Yellow()
+              _that.sphere.overlayColor = new BABYLON.Color3.Yellow()
               // 在碰到球体 的前提下 判断捏合 ==> 生成球体
               if (rightDistance < 0.4 && rightTouch) {
                 console.log('创建呀------')
                 rightTouch = false
-                const newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-                newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
-                newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) - 2
-                newCylinder.position.z = Math.random() * 10 + 5
+                if (_that.model === '3d') {
+                  newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 3, diameter: 3, diameterTop: 0, tessellation: 16 })
+                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1) + 2
+                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) + 2
+                  newCylinder.position.z = Math.random() * 5 + 5
+                } else {
+                  newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
+                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
+                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) - 2
+                  newCylinder.position.z = Math.random() * 10 + 5
+                }
                 // 设置颜色
                 newCylinder.renderOverlay = true
                 newCylinder.overlayAlpha = 0.4
@@ -330,7 +357,7 @@ export default {
               // 3.3 射线没有碰到物体时， 物体恢复原色
               rightHand && (rightHand = false)
               if (!leftHand) {
-                sphere.overlayColor = new BABYLON.Color3.Blue()
+                _that.sphere.overlayColor = new BABYLON.Color3.Blue()
                 scene.rootNodes.forEach(item => {
                   if (item.id === 'cylinder') {
                     // 圆锥体恢复颜色
@@ -365,7 +392,8 @@ export default {
     initSocket () {
       const _that = this
       // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
-      const socket = new WebSocket(`ws:${window.location.hostname}:56789/handtracking`)
+      // const socket = new WebSocket(`ws:${window.location.hostname}:56789/handtracking`)
+      const socket = new WebSocket(`ws:localhost:56789/handtracking`)
       socket.addEventListener('open', function (event) {
         // socket.send('Hello')
       })

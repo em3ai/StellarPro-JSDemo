@@ -52,10 +52,9 @@ export default {
   mounted () {
     this.initBabylon()
     this.initSocket()
-    let _that = this
+    const _that = this
     // 判断2D / 3D
     this.Timer = setInterval(() => {
-      console.log(_that)
       if (window.screen.width === 1920) {
         _that.model = '2d'
       } else if (window.screen.width === 3840) {
