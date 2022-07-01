@@ -1,13 +1,13 @@
 /*
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-06-10 17:05:05
+ * @LastEditTime: 2022-07-01 14:08:14
  * @Description: Modify here please
- * @FilePath: /slam-babylonjs/src/router/index.js
+ * @FilePath: /StellarPro-JSDemo/client/src/router/index.js
  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-
+import Slam from '../views/Slam.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -16,14 +16,11 @@ const routes = [
     name: 'Home',
     component: Home
   },
-  {
-    path: '/slam',
-    name: 'Slam',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Slam.vue')
-  },
+  // {
+  //   path: '/',
+  //   name: 'Slam',
+  //   component: Slam
+  // },
   { path: '*', redirect: '/', hidden: true }
 ]
 

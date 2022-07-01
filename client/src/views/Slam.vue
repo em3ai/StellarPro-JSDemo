@@ -141,7 +141,7 @@ export default {
     loadAssets () {
       // load mesh
       // const url = 'http://192.168.1.62:8080/scene.gltf'
-      const url = `${window.location.origin}/scene.gltf`
+      const url = `./scene.gltf`
       const that = this
       SceneLoader.ImportMeshAsync(null, url, null, this.scene).then(result => {
         console.log(result, 'd')
@@ -228,7 +228,7 @@ export default {
     // 背景天空盒
     prepareBgSkybox: function () {
       const name = 'skyBox'
-      const src = 'environments/skybox.env'
+      const src = './environments/skybox.env'
       const scene = this.scene
       const camera = scene.activeCamera
     
@@ -387,7 +387,8 @@ export default {
     initSocket () {
       const _that = this
       // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
-      _that.socket = new WebSocket(`ws:${window.location.hostname}:56789/slam`)
+      // _that.socket = new WebSocket(`ws:${window.location.hostname}:56789/slam`)
+      _that.socket = new WebSocket(`ws:localhost:56789/slam`)
       _that.socket.addEventListener('open', function (event) {
         // _that.socket.send('Hello')
       })
