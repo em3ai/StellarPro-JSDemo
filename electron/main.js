@@ -22,7 +22,7 @@ const createWindow = () => {
   })
   // win.loadURL('http://192.168.1.246:8000/jsDemo')
   // win.loadURL('http://192.168.1.82:10000/')
-  win.loadFile('index.html')
+  win.loadFile('web/index.html')
   // win.webContents.openDevTools () // 打开控制台
 }
 app.whenReady().then(() => {
