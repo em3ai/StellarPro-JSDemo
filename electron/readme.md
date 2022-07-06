@@ -1,29 +1,74 @@
-<!--
- * @Date: 2022-07-01 14:13:08
- * @LastEditTime: 2022-07-04 11:49:37
- * @Description: Modify here please
- * @FilePath: /StellarPro-JSDemo/electron/readme.md
--->
 # 注意
-以下 electron-app 的打包过程 要在linux环境下执行
+打包linux应用时，以下 electron-app 的打包过程 要在linux环境下执行（打包相应平台的应用，要在相应平台的环境下进行打包）
 # 打包注意事项
 
-### 1.打包需要包含的功能代码在 https://github.com/em3ai/StellarPro-JSDemo 的dev分支
-### 2.要分别打两次包，一个是handTracking, 一个是slam
+### 1.打包需要包含的功能代码在 https://github.com/em3ai/StellarPro-JSDemo 的for-electron分支
 
+## 2.打包 hand-tracking 应用
+### 2.1 下载 client 依赖 和 打包 client 
+`
+cd client
 
-### 3.打包handTracking时 先改 client/package.json 中的name 为 hand-tracking ==> electron 应用的名字
+下载依赖：npm install
 
-3.1 修改 client/src/router/index.js 中路由默认配置要是 Home
+打包（打包后的代码在electron/web目录下）： npm run build
+`
+### 2.2 下载 electron 依赖 和 打包 electron
+`
+cd electron
 
-### 4.打包slam时 先改 client/package.json 中的name 为 slam ==> electron 应用的名字
+下载依赖：npm install
 
-4.1 修改 client/src/router/index.js 中路由默认配置要是 Slam
+打包：npm run make
 
-4.2 修改 client/src/views/Slam.vue 中的  	`const url = '/scene.gltf'` 为 `const url = './scene.gltf'`
+`
+### 2.3 hand-tracking的deb包在 electron/out/make/deb/arm64 目录下
+拷贝文件到新的目录，或者直接安装
+`
+cd electron/out/make/deb/arm64
 
-4.3 修改 client/src/views/Slam.vue 中的  	`const src = 'environments/skybox.env'` 为 `const src = './environments/skybox.env'`
+安装指令
+sudo dpkg -i 'hand-tracking_1.1.2_arm64.deb'
+`
+## 3.打包 slam 应用
+### 3.1 下载 client 依赖
+`
+cd client
 
-### 5. 分两次把 handTracking 和 slam 打包出的dist目录下的文件拷贝到 electron-app 项目下的根目录下
+下载依赖：npm install
+`
+### 3.2 修改 client 下代码
+修改client/src/router/index.js内代码
 
-### 6. 执行 electron-app 的打包程序，分别得到 handTracking 和 slam 的linux版 app
+注释掉 Home 路由
+放开 Slam 路由
+
+### 3.3 打包client
+`
+打包（打包后的代码在electron/web目录下）： npm run build
+`
+### 3.4 下载 electron 依赖
+`
+cd electron
+
+下载依赖：npm install
+`
+### 3.5 修改 package.json 配置文件
+`
+1. "name": "hand-tracking" 修改为 "name": "slam"
+2. "description": "hand tracking applications" 修改为 "description": "slam applications"
+
+3. "icon": "./assets/appIcon/handTracking.png" 修改为 "icon": "./assets/appIcon/slam.png"
+`
+### 3.6 打包 electron 得到 slam 应用
+`
+打包：npm run make
+`
+### 3.7 slam的deb包在 electron/out/make/deb/arm64 目录下
+拷贝文件到新的目录，或者直接安装
+`
+cd electron/out/make/deb/arm64
+
+安装指令
+sudo dpkg -i 'slam_1.1.2_arm64.deb'
+`
