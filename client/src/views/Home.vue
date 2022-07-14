@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-01 13:51:41
+ * @LastEditTime: 2022-07-14 17:52:13
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -236,15 +236,15 @@ export default {
                 console.log('创建呀------')
                 leftTouch = false
                 var newCylinder = ''
-                if (_that.model) {
+                if (_that.model  === '3d') {
                   newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 3, diameter: 3, diameterTop: 0, tessellation: 16 })
-                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1) + 2
-                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) + 2
+                  newCylinder.position.x = Math.random() * 8 * (Math.random() > 0.5 ? 1 : -1)
+                  newCylinder.position.y = Math.random() * 4 * (Math.random() > 0.5 ? 1 : -1) - 2
                   newCylinder.position.z = Math.random() * 5 + 5
                 } else {
                   newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
-                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) - 2
+                  newCylinder.position.x = Math.random() * 14 * (Math.random() > 0.5 ? 1 : -1)
+                  newCylinder.position.y = Math.random() * 6 * (Math.random() > 0.5 ? 1 : -1) - 4
                   newCylinder.position.z = Math.random() * 10 + 5
                 }
                 // 设置颜色
@@ -320,13 +320,13 @@ export default {
                 rightTouch = false
                 if (_that.model === '3d') {
                   newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 3, diameter: 3, diameterTop: 0, tessellation: 16 })
-                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1) + 2
-                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) + 2
+                  newCylinder.position.x = Math.random() * 8 * (Math.random() > 0.5 ? 1 : -1)
+                  newCylinder.position.y = Math.random() * 4 * (Math.random() > 0.5 ? 1 : -1) - 2
                   newCylinder.position.z = Math.random() * 5 + 5
                 } else {
                   newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-                  newCylinder.position.x = Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
-                  newCylinder.position.y = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1) - 2
+                  newCylinder.position.x = Math.random() * 14 * (Math.random() > 0.5 ? 1 : -1)
+                  newCylinder.position.y = Math.random() * 6 * (Math.random() > 0.5 ? 1 : -1) - 4
                   newCylinder.position.z = Math.random() * 10 + 5
                 }
                 // 设置颜色
