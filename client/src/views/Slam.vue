@@ -1,12 +1,12 @@
 <template>
   <div class="about">
     <canvas id="renderCanvas" touch-action="none"></canvas>
-    <div :class="{'explosion-btn': true, 'EM3':true, 'EM3-explosion': true, 'explosion-active': explosionStatus} " @click="enterExplosionMode">
+    <!-- <div :class="{'explosion-btn': true, 'EM3':true, 'EM3-explosion': true, 'explosion-active': explosionStatus} " @click="enterExplosionMode">
       <div class="tips">爆炸</div>
     </div>
     <div :class="{'reset-btn': true, 'EM3':true, 'EM3-reset': true} " @click="handleReset">
       <div class="tips">重置</div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
