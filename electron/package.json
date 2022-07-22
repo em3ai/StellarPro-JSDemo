@@ -48,10 +48,6 @@
           "config": {
             "icon": "./assets/appIcon/handTracking.png"
           }
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
         }
       ]
     }
