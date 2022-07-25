@@ -31,39 +31,16 @@ export default {
       cameraData: null,
       socket: null,
       freeCamera: null,
-      VRCamera: null,
-      model: '2d',
+      VRCamera: null
       // cameraData: { position: [-0.0, 0.0, -0.0], rotation: [-0.0, 0.0, -0.0, 0.0] }
       // {"position": [-0.0, 0.0, -0.0], "rotation": [-0.0, 0.0, -0.0, 0.0]}
-      Timer: null
     }
   },
-  watch: {
-    // 2D / 3D模式切换
-    model: function (newVal, oldVal) {
-      if (newVal && newVal === '3d') {
-        this.scene.activeCamera = this.VRCamera
-      } else if (newVal && newVal === '2d') {
-        this.scene.activeCamera = this.freeCamera
-      }
-    }
-  },
-
   mounted () {
     this.initBabylon()
     this.initSocket()
-    const _that = this
-    // 判断2D / 3D
-    this.Timer = setInterval(() => {
-      if (window.screen.width === 1920) {
-        _that.model = '2d'
-      } else if (window.screen.width === 3840) {
-        _that.model = '3d'
-      }
-    }, 2000)
   },
   beforeDestroy () {
-    this.Timer && clearInterval(this.Timer)
   },
   methods: {
     // 同步眼镜数据到camera
@@ -180,16 +157,21 @@ export default {
     
       this.freeCamera = new BABYLON.FreeCamera("default camera", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene);
       // VRCamera
-      this.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene, undefined);
+      this.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("camera2", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene, undefined);
       // freeCamera.setTarget(worldCenter);
-      this.camera = this.freeCamera;
-
+      // 判断2D / 3D
+      if (window.screen.width === 1920) {
+        this.camera = this.freeCamera;
+        scene.activeCamera = this.camera;
+      } else if (window.screen.width === 3840) {
+        this.camera = this.VRCamera;
+        scene.activeCamera = this.camera;
+      }
       console.log(`worldC: ${worldCenter.x}, ${worldCenter.y}, ${worldCenter.z}`)
   
       this.camera.minZ = radius * 0.01;
       this.camera.maxZ = radius * 1000;
       this.camera.speed = radius * 0.2;
-      scene.activeCamera = this.camera;
         
       this.camera.attachControl();
 
@@ -259,7 +241,7 @@ export default {
 
     prepareLighting: function () {
       const scene = this.scene
-      const camera = scene.activeCamera
+      // const camera = scene.activeCamera
 
       // gltf使用环境纹理，基于图像的光照 image-based-lighting（IBL）
       if (!scene.environmentTexture) {

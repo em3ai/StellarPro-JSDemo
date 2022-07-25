@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-14 17:52:13
+ * @LastEditTime: 2022-07-25 16:00:03
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -20,12 +20,11 @@ export default {
     return {
       handInfo: '',
       scene: null,
-      model: '2d',
+      model: '',
       sphere2: null,
       freeCamera: null,
       VRCamera: null,
       camera: null,
-      Timer: null,
       sphere: null
     }
   },
@@ -57,18 +56,14 @@ export default {
   mounted () {
     this.initSocket()
     this.initBabylon()
-    const _that = this
     // 判断2D / 3D
-    this.Timer = setInterval(() => {
-      if (window.screen.width === 1920) {
-        _that.model = '2d'
-      } else if (window.screen.width === 3840) {
-        _that.model = '3d'
-      }
-    }, 2000)
+    if (window.screen.width === 1920) {
+      this.model = '2d'
+    } else if (window.screen.width === 3840) {
+      this.model = '3d'
+    }
   },
   beforeDestroy () {
-    this.Timer && clearInterval(this.Timer)
   },
   methods: {
     initBabylon () {
@@ -84,38 +79,27 @@ export default {
         // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
         _that.freeCamera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene)
         // VRCamera
-        _that.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("", new BABYLON.Vector3(0, 5, -10), scene, undefined)
+        _that.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("camera2", new BABYLON.Vector3(0, 5, -10), scene, undefined)
         _that.camera = _that.freeCamera
-        // Target the _that.camera to scene origin
-        _that.camera.setTarget(BABYLON.Vector3.Zero())
         // Attach the _that.camera to the canvas
         _that.camera.attachControl(canvas, false)
         // 球体
          _that.sphere = BABYLON.MeshBuilder.CreateSphere('sphere1', { segments: 16, diameter: 4, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
-        _that.sphere.position.y = 4
-        _that.sphere.position.z = 10
-
         // 设置颜色
         _that.sphere.renderOverlay = true
         _that.sphere.overlayColor = new BABYLON.Color3.Blue()
         _that.sphere.overlayAlpha = 0.2
-        console.log(_that.sphere.position, '_that.sphere.position===---')
         // 通过 创建个隐形球，相机朝向这个球
         _that.sphere2 = BABYLON.MeshBuilder.CreateSphere('sphere2', { segments: 6, diameter: 0.0000001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
-        _that.camera.lockedTarget = _that.sphere2
 
         // 创建 锥体
         _that.disc = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-        _that.disc.position.x = -2
-        _that.disc.position.z = 10
         // 设置颜色
         _that.disc.renderOverlay = true
         _that.disc.overlayColor = new BABYLON.Color3.Red()
         _that.disc.overlayAlpha = 0.4
 
         _that.disc1 = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 2, diameter: 2, diameterTop: 0, tessellation: 16 })
-        _that.disc1.position.x = 2
-        _that.disc1.position.z = 10
 
         _that.disc1.renderOverlay = true
         _that.disc1.overlayAlpha = 0.4
