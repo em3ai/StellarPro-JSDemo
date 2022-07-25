@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-25 16:00:03
+ * @LastEditTime: 2022-07-25 18:14:49
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -13,7 +13,7 @@
 <script>
 import * as BABYLON from 'babylonjs'
 // import { PointerEventTypes } from '@babylonjs/core/Events/pointerEvents'
-
+import { Toast } from '@/utils/toast/index'
 export default {
   name: 'Home',
   data () {
@@ -62,6 +62,7 @@ export default {
     } else if (window.screen.width === 3840) {
       this.model = '3d'
     }
+    Toast('设备已断开连接！', 4000)
   },
   beforeDestroy () {
   },

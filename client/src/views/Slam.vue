@@ -15,7 +15,8 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import '@babylonjs/loaders'
 import '@babylonjs/core/Loading/Plugins'
 import { MeshExploder } from '@babylonjs/core/Misc/meshExploder'
-
+import Loading from '@/utils/loading/loading'
+import '@/utils/loading/loading.css'
 export default {
   name: 'Slam',
   components: {
@@ -39,6 +40,16 @@ export default {
   mounted () {
     this.initBabylon()
     this.initSocket()
+    let load = new Loading(
+      {
+        'type': 3,
+        'tipLabel': '双目匹配中，请稍后...',
+      }
+    )
+    load.init()
+    setTimeout(() => {
+      load.hide()
+    }, 4000)
   },
   beforeDestroy () {
   },
