@@ -47,20 +47,20 @@ export default {
   mounted () {
     this.load = new Loading(
       {
-        'type': 3,
-        'tipLabel': '双目匹配中，请稍后...',
+        type: 3,
+        tipLabel: '双目匹配中，请稍后...'
       }
     )
     this.deviceDisconnect = new Loading(
       {
-        'type': 3,
-        'tipLabel': '设备已断开连接...',
+        type: 3,
+        tipLabel: '设备已断开连接...'
       }
     )
     this.noService = new Loading(
       {
-        'type': 3,
-        'tipLabel': 'socket 未连接！',
+        type: 3,
+        tipLabel: 'socket 未连接！'
       }
     )
     this.initBabylon()

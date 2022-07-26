@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-26 15:03:34
+ * @LastEditTime: 2022-07-26 15:13:25
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -64,20 +64,20 @@ export default {
   mounted () {
     this.load = new Loading(
       {
-        'type': 3,
-        'tipLabel': '双目匹配中，请稍后...',
+        type: 3,
+        tipLabel: '双目匹配中，请稍后...'
       }
     )
     this.deviceDisconnect = new Loading(
       {
-        'type': 3,
-        'tipLabel': '设备已断开连接...',
+        type: 3,
+        tipLabel: '设备已断开连接...'
       }
     )
     this.noService = new Loading(
       {
-        'type': 3,
-        'tipLabel': 'socket 未连接！',
+        type: 3,
+        tipLabel: 'socket 未连接！'
       }
     )
     this.initSocket()
@@ -246,7 +246,7 @@ export default {
                 console.log('创建呀------')
                 leftTouch = false
                 var newCylinder = ''
-                if (_that.model  === '3d') {
+                if (_that.model === '3d') {
                   newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 3, diameter: 3, diameterTop: 0, tessellation: 16 })
                   newCylinder.position.x = Math.random() * 8 * (Math.random() > 0.5 ? 1 : -1)
                   newCylinder.position.y = Math.random() * 4 * (Math.random() > 0.5 ? 1 : -1) - 2
@@ -427,10 +427,10 @@ export default {
       socket.addEventListener('message', function (event) {
         _that.handInfo = event.data && JSON.parse(event.data)
         // 双目匹配中
-        if (_that.loadFlag && _that.handInfo && JSON.stringify(_that.handInfo) != '{}') {
+        if (_that.loadFlag && _that.handInfo && JSON.stringify(_that.handInfo) !== '{}') {
           _that.loadFlag = false
           _that.load.hide()
-        } else if (!_that.loadFlag && ((_that.handInfo && JSON.stringify(_that.handInfo) == '{}') || !_that.handInfo)) {
+        } else if (!_that.loadFlag && ((_that.handInfo && JSON.stringify(_that.handInfo) === '{}') || !_that.handInfo)) {
           _that.loadFlag = true
           _that.load.init()
         }
