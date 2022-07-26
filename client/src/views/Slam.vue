@@ -32,24 +32,23 @@ export default {
       cameraData: null,
       socket: null,
       freeCamera: null,
-      VRCamera: null
+      VRCamera: null,
       // cameraData: { position: [-0.0, 0.0, -0.0], rotation: [-0.0, 0.0, -0.0, 0.0] }
       // {"position": [-0.0, 0.0, -0.0], "rotation": [-0.0, 0.0, -0.0, 0.0]}
+      load: null,
+      loadFlag: true
     }
   },
   mounted () {
-    this.initBabylon()
-    this.initSocket()
-    let load = new Loading(
+    this.load = new Loading(
       {
         'type': 3,
         'tipLabel': '双目匹配中，请稍后...',
       }
     )
-    load.init()
-    setTimeout(() => {
-      load.hide()
-    }, 4000)
+    this.load.init()
+    this.initBabylon()
+    this.initSocket()
   },
   beforeDestroy () {
   },
@@ -387,6 +386,13 @@ export default {
       })
       _that.socket.addEventListener('message', function (event) {
         _that.cameraData = event.data && JSON.parse(event.data)
+        if (_that.loadFlag && _that.cameraData && _that.cameraData.length > 0) {
+          _that.loadFlag = false
+          _that.load.hide()
+        } else if (!_that.loadFlag && ((_that.cameraData && _that.cameraData.length <= 0) || !_that.cameraData)) {
+          _that.loadFlag = true
+          _that.load.init()
+        }
       })
     },
 
