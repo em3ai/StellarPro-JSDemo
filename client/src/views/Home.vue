@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-26 15:13:25
+ * @LastEditTime: 2022-07-26 16:52:39
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -31,7 +31,7 @@ export default {
       load: null,
       loadFlag: true,
       deviceDisconnect: null,
-      deviceDidconnectFlag: false,
+      deviceDisconnectFlag: false,
       noService: null,
       noServiceFlag: false
     }
@@ -405,37 +405,41 @@ export default {
       // const socket = new WebSocket(`ws:${window.location.hostname}:56789/handtracking`)
       const socket = new WebSocket(`ws:localhost:56789/handtracking`)
       socket.addEventListener('open', function (event) {
-        // socket.send('Hello')
         Toast('socket 已连接！', 2000)
-        if (_that.deviceDidconnectFlag) {
-          _that.deviceDisconnect.hide()
-          _that.deviceDidconnectFlag = false
-        }
         if (_that.noServiceFlag) {
           _that.noService.hide()
           _that.noServiceFlag = false
         }
       })
       socket.addEventListener('close', function (event) {
-        // 连接出错/断开
-        // _that.deviceDisconnect.init()
+        // socket 连接出错/断开
         if (!_that.noServiceFlag) {
           _that.noService.init()
           _that.noServiceFlag = true
         }
       })
       socket.addEventListener('message', function (event) {
-        _that.handInfo = event.data && JSON.parse(event.data)
-        // 双目匹配中
-        if (_that.loadFlag && _that.handInfo && JSON.stringify(_that.handInfo) !== '{}') {
-          _that.loadFlag = false
-          _that.load.hide()
-        } else if (!_that.loadFlag && ((_that.handInfo && JSON.stringify(_that.handInfo) === '{}') || !_that.handInfo)) {
-          _that.loadFlag = true
-          _that.load.init()
+        if (event.data && JSON.parse(event.data) && JSON.parse(event.data).status && Number(JSON.parse(event.data).status) === -1 && !_that.deviceDisconnectFlag) {
+          // 眼镜断开连接
+          _that.deviceDisconnect.init()
+          _that.deviceDisconnectFlag = true
+        } else {
+          // 眼镜已连接
+          if (_that.deviceDisconnectFlag) {
+            _that.deviceDisconnect.hide()
+            _that.deviceDisconnectFlag = false
+          }
+          _that.handInfo = event.data && JSON.parse(event.data)
+          if (_that.loadFlag && _that.handInfo && JSON.stringify(_that.handInfo) !== '{}') {
+            // 双目匹配成功
+            _that.loadFlag = false
+            _that.load.hide()
+          } else if (!_that.loadFlag && ((_that.handInfo && JSON.stringify(_that.handInfo) === '{}') || !_that.handInfo)) {
+            // 双目匹配中
+            _that.loadFlag = true
+            _that.load.init()
+          }
         }
-
-        // TODO 设备断开连接
       })
     }
   }
