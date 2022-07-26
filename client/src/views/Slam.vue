@@ -17,6 +17,7 @@ import '@babylonjs/core/Loading/Plugins'
 import { MeshExploder } from '@babylonjs/core/Misc/meshExploder'
 import Loading from '@/utils/loading/loading'
 import '@/utils/loading/loading.css'
+import { Toast } from '@/utils/toast/index'
 export default {
   name: 'Slam',
   components: {
@@ -36,7 +37,11 @@ export default {
       // cameraData: { position: [-0.0, 0.0, -0.0], rotation: [-0.0, 0.0, -0.0, 0.0] }
       // {"position": [-0.0, 0.0, -0.0], "rotation": [-0.0, 0.0, -0.0, 0.0]}
       load: null,
-      loadFlag: true
+      loadFlag: true,
+      deviceDisconnect: null,
+      deviceDidconnectFlag: false,
+      noService: null,
+      noServiceFlag: false
     }
   },
   mounted () {
@@ -46,7 +51,18 @@ export default {
         'tipLabel': '双目匹配中，请稍后...',
       }
     )
-    this.load.init()
+    this.deviceDisconnect = new Loading(
+      {
+        'type': 3,
+        'tipLabel': '设备已断开连接...',
+      }
+    )
+    this.noService = new Loading(
+      {
+        'type': 3,
+        'tipLabel': 'socket 未连接！',
+      }
+    )
     this.initBabylon()
     this.initSocket()
   },
@@ -383,9 +399,27 @@ export default {
       _that.socket = new WebSocket(`ws:localhost:56789/slam`)
       _that.socket.addEventListener('open', function (event) {
         // _that.socket.send('Hello')
+        Toast('socket 已连接！', 2000)
+        if (_that.deviceDidconnectFlag) {
+          _that.deviceDisconnect.hide()
+          _that.deviceDidconnectFlag = false
+        }
+        if (_that.noServiceFlag) {
+          _that.noService.hide()
+          _that.noServiceFlag = false
+        }
+      })
+      _that.socket.addEventListener('close', function (event) {
+        // 连接出错/断开
+        // _that.deviceDisconnect.init()
+        if (!_that.noServiceFlag) {
+          _that.noService.init()
+          _that.noServiceFlag = true
+        }
       })
       _that.socket.addEventListener('message', function (event) {
         _that.cameraData = event.data && JSON.parse(event.data)
+        // 双目匹配中
         if (_that.loadFlag && _that.cameraData && _that.cameraData.length > 0) {
           _that.loadFlag = false
           _that.load.hide()
@@ -393,6 +427,8 @@ export default {
           _that.loadFlag = true
           _that.load.init()
         }
+
+        // TODO 设备断开连接
       })
     },
 

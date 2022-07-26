@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-25 18:14:49
+ * @LastEditTime: 2022-07-26 15:03:34
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -14,6 +14,8 @@
 import * as BABYLON from 'babylonjs'
 // import { PointerEventTypes } from '@babylonjs/core/Events/pointerEvents'
 import { Toast } from '@/utils/toast/index'
+import Loading from '@/utils/loading/loading'
+import '@/utils/loading/loading.css'
 export default {
   name: 'Home',
   data () {
@@ -25,7 +27,13 @@ export default {
       freeCamera: null,
       VRCamera: null,
       camera: null,
-      sphere: null
+      sphere: null,
+      load: null,
+      loadFlag: true,
+      deviceDisconnect: null,
+      deviceDidconnectFlag: false,
+      noService: null,
+      noServiceFlag: false
     }
   },
    watch: {
@@ -54,6 +62,24 @@ export default {
   components: {
   },
   mounted () {
+    this.load = new Loading(
+      {
+        'type': 3,
+        'tipLabel': '双目匹配中，请稍后...',
+      }
+    )
+    this.deviceDisconnect = new Loading(
+      {
+        'type': 3,
+        'tipLabel': '设备已断开连接...',
+      }
+    )
+    this.noService = new Loading(
+      {
+        'type': 3,
+        'tipLabel': 'socket 未连接！',
+      }
+    )
     this.initSocket()
     this.initBabylon()
     // 判断2D / 3D
@@ -62,7 +88,6 @@ export default {
     } else if (window.screen.width === 3840) {
       this.model = '3d'
     }
-    Toast('设备已断开连接！', 4000)
   },
   beforeDestroy () {
   },
@@ -381,9 +406,36 @@ export default {
       const socket = new WebSocket(`ws:localhost:56789/handtracking`)
       socket.addEventListener('open', function (event) {
         // socket.send('Hello')
+        Toast('socket 已连接！', 2000)
+        if (_that.deviceDidconnectFlag) {
+          _that.deviceDisconnect.hide()
+          _that.deviceDidconnectFlag = false
+        }
+        if (_that.noServiceFlag) {
+          _that.noService.hide()
+          _that.noServiceFlag = false
+        }
+      })
+      socket.addEventListener('close', function (event) {
+        // 连接出错/断开
+        // _that.deviceDisconnect.init()
+        if (!_that.noServiceFlag) {
+          _that.noService.init()
+          _that.noServiceFlag = true
+        }
       })
       socket.addEventListener('message', function (event) {
         _that.handInfo = event.data && JSON.parse(event.data)
+        // 双目匹配中
+        if (_that.loadFlag && _that.handInfo && JSON.stringify(_that.handInfo) != '{}') {
+          _that.loadFlag = false
+          _that.load.hide()
+        } else if (!_that.loadFlag && ((_that.handInfo && JSON.stringify(_that.handInfo) == '{}') || !_that.handInfo)) {
+          _that.loadFlag = true
+          _that.load.init()
+        }
+
+        // TODO 设备断开连接
       })
     }
   }
