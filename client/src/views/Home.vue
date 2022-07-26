@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-26 16:52:39
+ * @LastEditTime: 2022-07-26 17:19:38
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -29,7 +29,7 @@ export default {
       camera: null,
       sphere: null,
       load: null,
-      loadFlag: true,
+      loadFlag: false,
       deviceDisconnect: null,
       deviceDisconnectFlag: false,
       noService: null,

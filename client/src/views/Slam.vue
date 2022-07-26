@@ -37,7 +37,7 @@ export default {
       // cameraData: { position: [-0.0, 0.0, -0.0], rotation: [-0.0, 0.0, -0.0, 0.0] }
       // {"position": [-0.0, 0.0, -0.0], "rotation": [-0.0, 0.0, -0.0, 0.0]}
       load: null,
-      loadFlag: true,
+      loadFlag: false,
       deviceDisconnect: null,
       deviceDisconnectFlag: false,
       noService: null,
