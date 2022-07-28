@@ -48,7 +48,7 @@ export default {
     this.load = new Loading(
       {
         type: 3,
-        tipLabel: '双目匹配中，请稍后...'
+        tipLabel: '空间定位中，请稍后...'
       }
     )
     this.deviceDisconnect = new Loading(
@@ -78,7 +78,7 @@ export default {
           // 相机空间坐标
           camera.position.x = _that.cameraData[0] * 1
           camera.position.y = _that.cameraData[1] * 1
-          camera.position.z = _that.cameraData[2] * 1
+          camera.position.z = _that.cameraData[2] * 40
           // 相机角度
           const Q = new BABYLON.Quaternion(-_that.cameraData[4], _that.cameraData[5], -_that.cameraData[6], _that.cameraData[3])
           camera.rotationQuaternion = Q
@@ -186,10 +186,10 @@ export default {
       this.VRCamera = new BABYLON.VRDeviceOrientationFreeCamera("camera2", new BABYLON.Vector3(worldCenter.x, worldCenter.y, -radius), scene, undefined);
       // freeCamera.setTarget(worldCenter);
       // 判断2D / 3D
-      if (window.screen.width === 1920) {
+      if (window.screen.width <= 1920) {
         this.camera = this.freeCamera;
         scene.activeCamera = this.camera;
-      } else if (window.screen.width === 3840) {
+      } else if (window.screen.width === 3840 || window.screen.width > 1920) {
         this.camera = this.VRCamera;
         scene.activeCamera = this.camera;
       }
@@ -412,29 +412,49 @@ export default {
         }
       })
       _that.socket.addEventListener('message', function (event) {
-        if (event.data && JSON.parse(event.data) && JSON.parse(event.data).status && Number(JSON.parse(event.data).status) === -1 && !_that.deviceDisconnectFlag) {
-          // 眼镜断开连接
-          _that.deviceDisconnect.init()
-          _that.deviceDisconnectFlag = true
-        } else {
-          // 眼镜已连接
-          if (_that.deviceDisconnectFlag) {
-            _that.deviceDisconnect.hide()
-            _that.deviceDisconnectFlag = false
-          }
-          _that.cameraData = event.data && JSON.parse(event.data)
-          if (_that.loadFlag && _that.cameraData && _that.cameraData.length > 0) {
-            // 双目匹配成功
-            _that.loadFlag = false
-            _that.load.hide()
-          } else if (!_that.loadFlag && ((_that.cameraData && _that.cameraData.length <= 0) || !_that.cameraData)) {
-            // 双目匹配中
-            _that.loadFlag = true
-            _that.load.init()
-          }
+        if (event.data &&
+          JSON.parse(event.data) &&
+          JSON.parse(event.data).status &&
+          Number(JSON.parse(event.data).status) === -1 &&
+          !_that.deviceDisconnectFlag) {
+            // 眼镜断开连接
+            _that.deviceDisconnect.init()
+            _that.deviceDisconnectFlag = true
+            if (_that.loadFlag) {
+              // 双目匹配成功
+              _that.loadFlag = false
+              _that.load.hide()
+            }
+        } else if (event.data &&
+          (JSON.parse(event.data) &&
+          JSON.parse(event.data).status &&
+          Number(JSON.parse(event.data).status) !== -1 ||
+          (JSON.parse(event.data) && !JSON.parse(event.data).status))) {
+            // 眼镜已连接
+            if (_that.deviceDisconnectFlag) {
+              _that.deviceDisconnect.hide()
+              _that.deviceDisconnectFlag = false
+            }
+            _that.cameraData = event.data && JSON.parse(event.data)
+            if (!_that.loadFlag &&
+              ((_that.cameraData &&
+              _that.cameraData[0] === 0 &&
+              _that.cameraData[1] === 0 &&
+              _that.cameraData[2] === 0) ||
+              !_that.cameraData)) {
+                // 双目匹配中
+                _that.loadFlag = true
+                _that.load.init()
+            } else if (_that.loadFlag &&
+              _that.cameraData &&
+              (_that.cameraData[0] !== 0 ||
+              _that.cameraData[1] !== 0 ||
+              _that.cameraData[2] !== 0)) {
+                // 双目匹配成功
+                _that.loadFlag = false
+                _that.load.hide()
+            } 
         }
-
-        // TODO 设备断开连接
       })
     },
 

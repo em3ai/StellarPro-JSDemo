@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-26 17:19:38
+ * @LastEditTime: 2022-07-28 16:42:22
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -65,7 +65,7 @@ export default {
     this.load = new Loading(
       {
         type: 3,
-        tipLabel: '双目匹配中，请稍后...'
+        tipLabel: '正在初始化，请稍后...'
       }
     )
     this.deviceDisconnect = new Loading(
@@ -83,9 +83,9 @@ export default {
     this.initSocket()
     this.initBabylon()
     // 判断2D / 3D
-    if (window.screen.width === 1920) {
+    if (window.screen.width <= 1920) {
       this.model = '2d'
-    } else if (window.screen.width === 3840) {
+    } else if (window.screen.width === 3840 || window.screen.width > 1920) {
       this.model = '3d'
     }
   },
@@ -403,7 +403,8 @@ export default {
       const _that = this
       // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
       // const socket = new WebSocket(`ws:${window.location.hostname}:56789/handtracking`)
-      const socket = new WebSocket(`ws:localhost:56789/handtracking`)
+      // const socket = new WebSocket(`ws:localhost:56789/handtracking`)
+      const socket = new WebSocket(`ws:192.168.1.246:56789/handtracking`)
       socket.addEventListener('open', function (event) {
         Toast('socket 已连接！', 2000)
         if (_that.noServiceFlag) {
@@ -419,26 +420,44 @@ export default {
         }
       })
       socket.addEventListener('message', function (event) {
-        if (event.data && JSON.parse(event.data) && JSON.parse(event.data).status && Number(JSON.parse(event.data).status) === -1 && !_that.deviceDisconnectFlag) {
+        if (event.data &&
+          JSON.parse(event.data) &&
+          JSON.parse(event.data).status &&
+          Number(JSON.parse(event.data).status) === -1 &&
+          !_that.deviceDisconnectFlag) {
           // 眼镜断开连接
           _that.deviceDisconnect.init()
           _that.deviceDisconnectFlag = true
-        } else {
-          // 眼镜已连接
-          if (_that.deviceDisconnectFlag) {
-            _that.deviceDisconnect.hide()
-            _that.deviceDisconnectFlag = false
-          }
-          _that.handInfo = event.data && JSON.parse(event.data)
-          if (_that.loadFlag && _that.handInfo && JSON.stringify(_that.handInfo) !== '{}') {
+          if (_that.loadFlag) {
             // 双目匹配成功
             _that.loadFlag = false
             _that.load.hide()
-          } else if (!_that.loadFlag && ((_that.handInfo && JSON.stringify(_that.handInfo) === '{}') || !_that.handInfo)) {
-            // 双目匹配中
-            _that.loadFlag = true
-            _that.load.init()
           }
+        } else if (event.data &&
+          (JSON.parse(event.data) &&
+          JSON.parse(event.data).status &&
+          Number(JSON.parse(event.data).status) !== -1 ||
+          (JSON.parse(event.data) && !JSON.parse(event.data).status))) {
+            // 眼镜已连接
+            if (_that.deviceDisconnectFlag) {
+              _that.deviceDisconnect.hide()
+              _that.deviceDisconnectFlag = false
+            }
+            _that.handInfo = event.data && JSON.parse(event.data)
+            if (_that.loadFlag &&
+              _that.handInfo &&
+              JSON.stringify(_that.handInfo) !== '{}') {
+                // 双目匹配成功
+                _that.loadFlag = false
+                _that.load.hide()
+            } else if (!_that.loadFlag &&
+              ((_that.handInfo &&
+              JSON.stringify(_that.handInfo) === '{}') ||
+              !_that.handInfo)) {
+              // 双目匹配中
+              _that.loadFlag = true
+              _that.load.init()
+            }
         }
       })
     }
