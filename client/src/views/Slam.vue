@@ -425,6 +425,13 @@ export default {
               _that.loadFlag = false
               _that.load.hide()
             }
+            // 眼镜断开连接，后端数据完全重新算，页面模型数据应重置
+            _that.camera.rotation.x = 0
+            _that.camera.rotation.y = 0
+            _that.camera.rotation.z = 0
+            _that.camera.position.x = 0
+            _that.camera.position.y = 0
+            _that.camera.position.z = 0
         } else if (event.data &&
           (JSON.parse(event.data) &&
           JSON.parse(event.data).status &&
