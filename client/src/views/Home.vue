@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-29 13:43:26
+ * @LastEditTime: 2022-07-29 17:42:20
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -417,6 +417,8 @@ export default {
           _that.noService.init()
           _that.noServiceFlag = true
         }
+        // 重连
+        _that.initSocket()
       })
       socket.addEventListener('message', function (event) {
         if (event.data &&

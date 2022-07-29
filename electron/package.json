@@ -1,6 +1,6 @@
 {
-  "name": "hand-tracking",
-  "version": "1.1.2",
+  "name": "handtracking",
+  "version": "2.0.1",
   "description": "hand tracking applications",
   "main": "main.js",
   "scripts": {
