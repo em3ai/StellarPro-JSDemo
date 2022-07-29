@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-29 16:32:16
+ * @LastEditTime: 2022-07-29 16:49:36
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -143,12 +143,12 @@ export default {
         //   }
         // })
 
-        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 0, -1), scene)
+        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(50, 1000, -5), scene)
         console.log(light)
         // 改变背景颜色
         scene.autoClear = true
         scene.clearColor = new BABYLON.Color4(0, 0, 0, 1)
-        const leftUrl = `./left-hand.glb`
+        const leftUrl = `./hand.glb`
         SceneLoader.ImportMeshAsync(null, leftUrl, null, scene).then(result => {
           console.log(result, 'd')
           _that.meshes = result.meshes
@@ -157,9 +157,9 @@ export default {
           console.log(_that.transformNodes, 'transformNodes')
 
           // 左右手 默认不在视野内
-          var leftRoot = _that.scene.getNodeByName('Armature001')
+          var leftRoot = _that.scene.getNodeByName('Armature.001')
           console.log(leftRoot)
-          leftRoot.position.x = -2
+          // leftRoot.position.x = -2
 
           // leftRoot.position.x = 10000
           // leftRoot.rotationQuaternion = new BABYLON.Vector3(0, 0, -Math.PI).toQuaternion()
