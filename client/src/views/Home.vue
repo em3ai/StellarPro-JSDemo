@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-28 16:42:22
+ * @LastEditTime: 2022-07-29 13:43:26
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -403,8 +403,7 @@ export default {
       const _that = this
       // 注意：下面 socket 连接的 IP 应为 python 起服务的 IP
       // const socket = new WebSocket(`ws:${window.location.hostname}:56789/handtracking`)
-      // const socket = new WebSocket(`ws:localhost:56789/handtracking`)
-      const socket = new WebSocket(`ws:192.168.1.246:56789/handtracking`)
+      const socket = new WebSocket(`ws:localhost:56789/handtracking`)
       socket.addEventListener('open', function (event) {
         Toast('socket 已连接！', 2000)
         if (_that.noServiceFlag) {
