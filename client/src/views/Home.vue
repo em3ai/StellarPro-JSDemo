@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-01 17:55:09
+ * @LastEditTime: 2022-08-01 18:42:14
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -143,7 +143,7 @@ export default {
         //   }
         // })
 
-        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(50, 1000, -5), scene)
+        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(50, 10, -5), scene)
         console.log(light)
         // 改变背景颜色
         scene.autoClear = true
@@ -265,7 +265,7 @@ export default {
             var leftRoot = _that.scene.getNodeByName('Armature.001')
             var leftBone = leftRoot && leftRoot.getChildTransformNodes(false)
             // 控制根节点移动
-            leftRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
+            leftRoot.scaling = new BABYLON.Vector3(1, -1, 1)
             leftRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
             // 控制根节点旋转
             let V = new BABYLON.Quaternion(_that.handInfo.left_info.wrist[1], _that.handInfo.left_info.wrist[2], _that.handInfo.left_info.wrist[3], _that.handInfo.left_info.wrist[0])
@@ -369,7 +369,8 @@ export default {
             var rightRoot = _that.scene.getNodeByName('Armature')
             var rightBone = rightRoot && rightRoot.getChildTransformNodes(false)
             // 控制根节点移动
-            rightRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
+            // 右手配合旋转 ==> 手心手背问题
+            rightRoot.scaling = new BABYLON.Vector3(1, -1, -1)
             rightRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
             // 控制根节点旋转
             let V = new BABYLON.Quaternion(_that.handInfo.right_info.wrist[1], _that.handInfo.right_info.wrist[2], _that.handInfo.right_info.wrist[3], _that.handInfo.right_info.wrist[0])
@@ -377,9 +378,6 @@ export default {
             V.x = V.x + Math.PI
             V.y = V.y + Math.PI
             rightRoot.rotationQuaternion = new BABYLON.Vector3(-V.x, -V.y, -V.z).toQuaternion()
-            // 右手配合旋转 ==> 手心手背问题
-            rightRoot.scaling.y = -1
-            rightRoot.scaling.z = -1
             // 控制每个手指节点
             let Q = null
             rightBone && rightBone.map(item => {
@@ -546,32 +544,24 @@ export default {
     matchLeftHand(item, angles, Q) {
       switch (item.id) { 
           case 'Bone.016': // 拇指
-            var x = -angles[1]
-            // var z = (Math.PI/2) - angles[0] - (Math.PI/4)
-            var z = angles[0] - (Math.PI/2)  +  Math.PI/1.5
-
-            x = -Math.sin(angles[0]) * Math.cos(angles[1]) 
-             var y = -Math.cos(angles[0]) * Math.cos(angles[1])
-             z =Math.sin(angles[1]) 
-            // var z =  angles[0]
-            // Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
-            Q = new BABYLON.Vector3(x, y, z).toQuaternion()
-            // Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
+            var z = -angles[1] + Math.PI / 4
+            var x = -angles[0] 
+            Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
-          case 'Bone.019': // 拇指
-            var x = -angles[2]
-            Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
-            item.rotationQuaternion = Q
-            break;
+          // case 'Bone.019': // 拇指
+          //   var x = -angles[2]
+          //   Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
+          //   item.rotationQuaternion = Q
+          //   break;
           case 'Bone.018':
-            var x = -angles[3]
+            var x = angles[2]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.015': // 食指
             var x = -angles[5]
-            var z = (Math.PI/2) - angles[4] - (Math.PI/7)
+            var z = (Math.PI/2) - angles[4] - (Math.PI/8)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
@@ -639,31 +629,24 @@ export default {
     matchRightHand(item, angles, Q) {
       switch (item.id) { 
           case 'Bone.016': // 拇指 TODO 拇指
-            var x = angles[1]
-            // var z =  angles[0] > Math.PI / 10 ?  Math.PI / 10 : (angles[0] < -Math.PI / 10 ? -Math.PI / 10 : angles[0])
-            // var z = -((Math.PI/2) - angles[0] - Math.PI/1.5)
-            var z = angles[0] - (Math.PI/2)  +  Math.PI/1.8
-             x = Math.sin(angles[0]) * Math.cos(angles[1])
-             var y = Math.cos(angles[0]) * Math.cos(angles[1])
-             z = Math.sin(angles[1])
-            // var z =  angles[0]
-            // Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
-            Q = new BABYLON.Vector3(x, y, z).toQuaternion()
+            var z = -angles[1] + Math.PI / 4
+            var x = -angles[0] 
+            Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
-          case 'Bone.019': // 拇指
-            var x = -angles[2]
-            Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
-            item.rotationQuaternion = Q
-            break;
+          // case 'Bone.019': // 拇指
+          //   var x = -angles[2]
+          //   Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
+          //   item.rotationQuaternion = Q
+          //   break;
           case 'Bone.018':
-            var x = -angles[3]
+            var x = angles[2]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
         case 'Bone.015': // 食指
             var x = -angles[5]
-            var z = angles[4] - (Math.PI/2) - (Math.PI/7)
+            var z = angles[4] - (Math.PI/2) - (Math.PI/8)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
