@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-01 10:49:21
+ * @LastEditTime: 2022-08-01 14:12:43
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -264,10 +264,17 @@ export default {
             var angles = _that.handInfo.left_info.angles
             var leftRoot = _that.scene.getNodeByName('Armature.001')
             var leftBone = leftRoot && leftRoot.getChildTransformNodes(false)
+            // 控制根节点移动
+            leftRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
+            leftRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
+            // 控制根节点旋转
+            let V = new BABYLON.Quaternion(_that.handInfo.left_info.wrist[1], _that.handInfo.left_info.wrist[2], _that.handInfo.left_info.wrist[3], _that.handInfo.left_info.wrist[0])
+            V = V.toEulerAngles()
+            V.x = V.x + Math.PI
+            leftRoot.rotationQuaternion = new BABYLON.Vector3(V.x, -V.y, V.z).toQuaternion()
+            // 控制每个手指节点
             let Q = null
             leftBone && leftBone.map(item => {
-              leftRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
-              leftRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
               _that.matchLeftHand(item, angles, Q)
             })
              // 2. 创建 射线
@@ -360,13 +367,19 @@ export default {
             // 最新代码
             var angles = _that.handInfo.right_info.angles
             var rightRoot = _that.scene.getNodeByName('Armature')
-            // 改变右手角度
-            rightRoot.rotationQuaternion =  new BABYLON.Vector3(Math.PI, Math.PI, 0).toQuaternion()
             var rightBone = rightRoot && rightRoot.getChildTransformNodes(false)
+            // 控制根节点移动
+            rightRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
+            rightRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
+            // 控制根节点旋转
+            let V = new BABYLON.Quaternion(_that.handInfo.right_info.wrist[1], _that.handInfo.right_info.wrist[2], _that.handInfo.right_info.wrist[3], _that.handInfo.right_info.wrist[0])
+            V = V.toEulerAngles()
+            V.x = V.x + Math.PI
+            V.y = V.y + Math.PI
+            rightRoot.rotationQuaternion = new BABYLON.Vector3(V.x, -V.y, V.z).toQuaternion()
+            // 控制每个手指节点
             let Q = null
             rightBone && rightBone.map(item => {
-              rightRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
-              rightRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
               _that.matchRightHand(item, angles, Q)
             })
 
