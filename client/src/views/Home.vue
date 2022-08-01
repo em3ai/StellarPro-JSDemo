@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-01 10:34:40
+ * @LastEditTime: 2022-08-01 10:49:21
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -158,12 +158,9 @@ export default {
 
           // 左右手 默认不在视野内
           var leftRoot = _that.scene.getNodeByName('Armature.001')
-          console.log(leftRoot)
-          // leftRoot.position.x = -2
-
-          // leftRoot.position.x = 10000
-          // leftRoot.rotationQuaternion = new BABYLON.Vector3(0, 0, -Math.PI).toQuaternion()
-          // rightRoot.position.x = 10000
+          leftRoot.position.x = 10000
+          var rightRoot = _that.scene.getNodeByName('Armature')
+          rightRoot.position.x = 10000
         })
         // const rightUrl = `./right-hand.glb`
         // SceneLoader.ImportMeshAsync(null, rightUrl, null, scene).then(result => {
@@ -266,12 +263,11 @@ export default {
             // 最新代码
             var angles = _that.handInfo.left_info.angles
             var leftRoot = _that.scene.getNodeByName('Armature.001')
-            console.log(leftRoot, 'leftRoot-------========')
             var leftBone = leftRoot && leftRoot.getChildTransformNodes(false)
             let Q = null
             leftBone && leftBone.map(item => {
               leftRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
-              leftRoot.position = new BABYLON.Vector3(-points[9].x * 10, points[9].y * 10, points[9].z * 10)
+              leftRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
               _that.matchLeftHand(item, angles, Q)
             })
              // 2. 创建 射线
@@ -279,7 +275,7 @@ export default {
             leftOriginTwo = _that.handInfo.left_info.keypoints[8]
             leftRayHelper && leftRayHelper.dispose()
             leftLocalMeshDirection = new BABYLON.Vector3(leftOriginTwo.x - leftOriginOne.x, leftOriginTwo.y - leftOriginOne.y, leftOriginTwo.z - leftOriginOne.z)
-            leftLocalMeshOrigin = new BABYLON.Vector3(leftOriginTwo.x * 10, leftOriginTwo.y * 10, leftOriginTwo.z * 10 + 0.2)
+            leftLocalMeshOrigin = new BABYLON.Vector3(leftOriginTwo.x * 20, leftOriginTwo.y * 20, leftOriginTwo.z * 20 + 0.2)
             leftRay = new BABYLON.Ray(leftLocalMeshOrigin, leftLocalMeshDirection, 200)
             leftRayHelper = new BABYLON.RayHelper(leftRay)
             leftRayHelper.show(scene)
@@ -343,9 +339,12 @@ export default {
           } else {
             leftRayHelper && leftRayHelper.dispose()
             // TODO 让模型消失
-            handLeft.map((item) => {
-              item.isVisible = false
-            })
+            // handLeft.map((item) => {
+            //   item.isVisible = false
+            // })
+            // 左右手 默认不在视野内
+            var leftRoot = _that.scene.getNodeByName('Armature.001')
+            leftRoot && (leftRoot.position.x = 10000)
           }
           // 二、 生成右手
           if (_that.handInfo && _that.handInfo.right_info && Number(_that.handInfo.right_info.confidence) > 0) {
@@ -367,7 +366,7 @@ export default {
             let Q = null
             rightBone && rightBone.map(item => {
               rightRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
-              rightRoot.position = new BABYLON.Vector3(-points[9].x * 10, points[9].y * 10, points[9].z * 10)
+              rightRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
               _that.matchRightHand(item, angles, Q)
             })
 
@@ -376,7 +375,7 @@ export default {
             rightOriginTwo = _that.handInfo.right_info.keypoints[8]
             rightRayHelper && rightRayHelper.dispose()
             rightLocalMeshDirection = new BABYLON.Vector3(rightOriginTwo.x - rightOriginOne.x, rightOriginTwo.y - rightOriginOne.y, rightOriginTwo.z - rightOriginOne.z)
-            rightLocalMeshOrigin = new BABYLON.Vector3(rightOriginTwo.x * 10, rightOriginTwo.y * 10, rightOriginTwo.z * 10 + 0.2)
+            rightLocalMeshOrigin = new BABYLON.Vector3(rightOriginTwo.x * 20, rightOriginTwo.y * 20, rightOriginTwo.z * 20 + 0.2)
             rightRay = new BABYLON.Ray(rightLocalMeshOrigin, rightLocalMeshDirection, 200)
             rightRayHelper = new BABYLON.RayHelper(rightRay)
             rightRayHelper.show(scene)
@@ -442,9 +441,12 @@ export default {
             // 释放射线
             rightRayHelper && rightRayHelper.dispose()
             // TODO 让模型消失
-            handRight.map((item) => {
-              item.isVisible = false
-            })
+            // handRight.map((item) => {
+            //   item.isVisible = false
+            // })
+            // 左右手 默认不在视野内
+            var rightRoot = _that.scene.getNodeByName('Armature')
+            rightRoot && (rightRoot.position.x = 10000)
           }
         })
         return scene
