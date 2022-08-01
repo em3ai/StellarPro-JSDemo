@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-07-29 16:49:36
+ * @LastEditTime: 2022-08-01 10:34:40
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -224,13 +224,13 @@ export default {
         // 左手 21个 关节
         const handLeft = []
         for (var num = 0; num < 21; num++) {
-          handLeft.push(BABYLON.MeshBuilder.CreateSphere('sphere3', { segments: 16, diameter: 0.2, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene))
+          handLeft.push(BABYLON.MeshBuilder.CreateSphere('sphere3', { segments: 16, diameter: 0.0001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene))
         }
         console.log('handLeft:', handLeft)
         // 右手 21个 关节
         const handRight = []
         for (var nums = 0; nums < 21; nums++) {
-          handRight.push(BABYLON.MeshBuilder.CreateSphere('sphere3', { segments: 16, diameter: 0.2, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene))
+          handRight.push(BABYLON.MeshBuilder.CreateSphere('sphere3', { segments: 16, diameter: 0.0001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene))
         }
         console.log('handRight:', handRight)
         var leftRay = '', leftRayHelper = '',
@@ -254,6 +254,13 @@ export default {
           // console.log(_that.handInfo)
           // 一、生成左手
           if (_that.handInfo && _that.handInfo.left_info && Number(_that.handInfo.left_info.confidence) > 0) {
+            // 1. 渲染21个指关节
+            _that.handInfo && _that.handInfo.left_info && _that.handInfo.left_info.keypoints && _that.handInfo.left_info.keypoints.map((item, index) => {
+              handLeft[index].isVisible = true
+              handLeft[index].position.x = item.x * 10
+              handLeft[index].position.y = item.y * 10
+              handLeft[index].position.z = item.z * 10
+            })
             // 1. 渲染21个指关节
             var points = _that.handInfo.left_info.keypoints
             // 最新代码
@@ -335,6 +342,7 @@ export default {
             }
           } else {
             leftRayHelper && leftRayHelper.dispose()
+            // TODO 让模型消失
             handLeft.map((item) => {
               item.isVisible = false
             })
@@ -342,16 +350,24 @@ export default {
           // 二、 生成右手
           if (_that.handInfo && _that.handInfo.right_info && Number(_that.handInfo.right_info.confidence) > 0) {
             // 1. 渲染21个指关节
+            _that.handInfo && _that.handInfo.right_info && _that.handInfo.right_info.keypoints && _that.handInfo.right_info.keypoints.map((item, index) => {
+              handRight[index].isVisible = true
+              handRight[index].position.x = item.x * 10
+              handRight[index].position.y = item.y * 10
+              handRight[index].position.z = item.z * 10
+            })
+            // 1. 渲染21个指关节
             var points = _that.handInfo.right_info.keypoints
             // 最新代码
             var angles = _that.handInfo.right_info.angles
             var rightRoot = _that.scene.getNodeByName('Armature')
-            console.log(rightRoot, 'rightRoot-------========')
+            // 改变右手角度
+            rightRoot.rotationQuaternion =  new BABYLON.Vector3(Math.PI, Math.PI, 0).toQuaternion()
             var rightBone = rightRoot && rightRoot.getChildTransformNodes(false)
             let Q = null
             rightBone && rightBone.map(item => {
               rightRoot.scaling = new BABYLON.Vector3(0.8, -0.8, 0.8)
-              // rightRoot.position = new BABYLON.Vector3(-points[9].x * 10, points[9].y * 10, points[9].z * 10)
+              rightRoot.position = new BABYLON.Vector3(-points[9].x * 10, points[9].y * 10, points[9].z * 10)
               _that.matchRightHand(item, angles, Q)
             })
 
@@ -425,6 +441,7 @@ export default {
           } else {
             // 释放射线
             rightRayHelper && rightRayHelper.dispose()
+            // TODO 让模型消失
             handRight.map((item) => {
               item.isVisible = false
             })
@@ -612,66 +629,68 @@ export default {
           //   item.position = new BABYLON.Vector3(-points[0].x * scale, points[0].y * scale, -points[0].z * scaleZ)
           //   break;
         case 'Bone.015': // 食指
-            var x = -angles[5]
-            var z = (Math.PI/2) - angles[4] - (Math.PI/7)
+            var x = angles[5]
+            var z = angles[4] - (Math.PI/2) - (Math.PI/7)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.014':
-            var x = -angles[6]
+            var x = angles[6]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break; 
           case 'Bone.013':
-            var x = -angles[7]
+            var x = angles[7]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.011': // 中指
-            var x = -angles[9]
-            var z = (Math.PI/2) - angles[8]
+            var x = angles[9]
+            var z = angles[8] - (Math.PI/2)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.010':
-            var x = - angles[10]
+            var x = angles[10]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.009':
-            var x = -angles[11]
+            var x = angles[11]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.007': // 无名指
-            var x = -angles[13]
-            var z = (Math.PI/2) - angles[12] + (Math.PI/7)
+            var x = angles[13]
+            var z = angles[12] - (Math.PI/2)  + (Math.PI/7)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.006':
-            var x = -angles[14]
+            var x = angles[14]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.005':
-            var x = -angles[15]
+            var x = angles[15]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.003': // 小拇指
-            var x = -angles[17]
-            var z = (Math.PI/2) - angles[16] + (Math.PI/4)
+            var x = angles[17]
+            // var z = (Math.PI/2) - angles[16] + (Math.PI/4)
+            var z = angles[16] - (Math.PI/2) + (Math.PI/4)
+
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.002':
-            var x = -angles[18]
+            var x = angles[18]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.001':
-            var x = -angles[19]
+            var x = angles[19]
             Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
