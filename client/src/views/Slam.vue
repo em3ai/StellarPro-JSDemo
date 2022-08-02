@@ -78,7 +78,7 @@ export default {
           // 相机空间坐标
           camera.position.x = _that.cameraData[0] * 1
           camera.position.y = _that.cameraData[1] * 1
-          camera.position.z = _that.cameraData[2] * 40
+          camera.position.z = _that.cameraData[2] * 100
           // 相机角度
           const Q = new BABYLON.Quaternion(-_that.cameraData[4], _that.cameraData[5], -_that.cameraData[6], _that.cameraData[3])
           camera.rotationQuaternion = Q
@@ -410,6 +410,8 @@ export default {
           _that.noService.init()
           _that.noServiceFlag = true
         }
+        // 重连
+        _that.initSocket()
       })
       _that.socket.addEventListener('message', function (event) {
         if (event.data &&
