@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-02 11:07:32
+ * @LastEditTime: 2022-08-02 11:45:20
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -150,11 +150,9 @@ export default {
         scene.clearColor = new BABYLON.Color4(0, 0, 0, 1)
         const leftUrl = `./hand.glb`
         SceneLoader.ImportMeshAsync(null, leftUrl, null, scene).then(result => {
-          console.log(result, 'd')
           _that.meshes = result.meshes
           _that.skeletons = result.skeletons
           _that.transformNodes = result.transformNodes
-          console.log(_that.transformNodes, 'transformNodes')
 
           // 左右手 默认不在视野内
           var leftRoot = _that.scene.getNodeByName('Armature.001')
@@ -223,13 +221,13 @@ export default {
         for (var num = 0; num < 21; num++) {
           handLeft.push(BABYLON.MeshBuilder.CreateSphere('sphere3', { segments: 16, diameter: 0.0001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene))
         }
-        console.log('handLeft:', handLeft)
+        // console.log('handLeft:', handLeft)
         // 右手 21个 关节
         const handRight = []
         for (var nums = 0; nums < 21; nums++) {
           handRight.push(BABYLON.MeshBuilder.CreateSphere('sphere3', { segments: 16, diameter: 0.0001, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene))
         }
-        console.log('handRight:', handRight)
+        // console.log('handRight:', handRight)
         var leftRay = '', leftRayHelper = '',
         rightRay = '', rightRayHelper = '',
         leftTouch = true, rightTouch = true,
@@ -293,7 +291,7 @@ export default {
               !leftHand && (leftHand = true)
               _that.sphere.overlayColor = new BABYLON.Color3.Yellow()
               if (leftDistance < 0.4 && leftTouch) {
-                console.log('创建呀------')
+                // console.log('创建呀------')
                 leftTouch = false
                 var newCylinder = ''
                 if (_that.model === '3d') {
@@ -328,7 +326,7 @@ export default {
               if (leftDistance < 0.4) {
                 // 删除圆锥体
                 leftRayInfo.pickedMesh.dispose()
-                console.log('消失呀---')
+                // console.log('消失呀---')
               }
             } else {
               // 3.3 射线没有碰到物体时， 物体恢复原色
@@ -401,7 +399,7 @@ export default {
               _that.sphere.overlayColor = new BABYLON.Color3.Yellow()
               // 在碰到球体 的前提下 判断捏合 ==> 生成球体
               if (rightDistance < 0.4 && rightTouch) {
-                console.log('创建呀------')
+                // console.log('创建呀------')
                 rightTouch = false
                 if (_that.model === '3d') {
                   newCylinder = BABYLON.MeshBuilder.CreateCylinder('cylinder', { height: 3, diameter: 3, diameterTop: 0, tessellation: 16 })
@@ -436,7 +434,7 @@ export default {
               if (rightDistance < 0.4) {
                 // 删除圆锥体
                 rightRayInfo.pickedMesh.dispose()
-                console.log('消失呀---')
+                // console.log('消失呀---')
               }
             } else {
               // 3.3 射线没有碰到物体时， 物体恢复原色
@@ -545,7 +543,7 @@ export default {
       switch (item.id) { 
           case 'Bone.016': // 拇指
             var z = -angles[1] + Math.PI / 4
-            var x = -angles[0] 
+            var x = -angles[0] * 0.7
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
@@ -630,7 +628,7 @@ export default {
       switch (item.id) { 
           case 'Bone.016': // 拇指 TODO 拇指
             var z = -angles[1] + Math.PI / 4
-            var x = -angles[0] 
+            var x = -angles[0] * 0.7
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
