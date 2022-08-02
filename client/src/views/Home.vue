@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-01 18:42:14
+ * @LastEditTime: 2022-08-02 11:07:32
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -555,13 +555,13 @@ export default {
           //   item.rotationQuaternion = Q
           //   break;
           case 'Bone.018':
-            var x = angles[2]
-            Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
+            var x = angles[3] * 2
+            Q = new BABYLON.Vector3(x, Math.PI/3, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
           case 'Bone.015': // 食指
             var x = -angles[5]
-            var z = (Math.PI/2) - angles[4] - (Math.PI/8)
+            var z = (Math.PI/2) - angles[4] - (Math.PI/10)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
@@ -640,13 +640,13 @@ export default {
           //   item.rotationQuaternion = Q
           //   break;
           case 'Bone.018':
-            var x = angles[2]
-            Q = new BABYLON.Vector3(x, 0, 0).toQuaternion()
+            var x = angles[3] * 2
+            Q = new BABYLON.Vector3(x, Math.PI/3, 0).toQuaternion()
             item.rotationQuaternion = Q
             break;
         case 'Bone.015': // 食指
             var x = -angles[5]
-            var z = angles[4] - (Math.PI/2) - (Math.PI/8)
+            var z = angles[4] - (Math.PI/2) - (Math.PI/10)
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
             item.rotationQuaternion = Q
             break;
