@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-02 11:45:20
+ * @LastEditTime: 2022-08-02 11:57:28
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -148,8 +148,8 @@ export default {
         // 改变背景颜色
         scene.autoClear = true
         scene.clearColor = new BABYLON.Color4(0, 0, 0, 1)
-        const leftUrl = `./hand.glb`
-        SceneLoader.ImportMeshAsync(null, leftUrl, null, scene).then(result => {
+        const handUrl = `./hand.glb`
+        SceneLoader.ImportMeshAsync(null, handUrl, null, scene).then(result => {
           _that.meshes = result.meshes
           _that.skeletons = result.skeletons
           _that.transformNodes = result.transformNodes
@@ -160,21 +160,6 @@ export default {
           var rightRoot = _that.scene.getNodeByName('Armature')
           rightRoot.position.x = 10000
         })
-        // const rightUrl = `./right-hand.glb`
-        // SceneLoader.ImportMeshAsync(null, rightUrl, null, scene).then(result => {
-        //   console.log(result, 'd')
-        //   _that.meshes = result.meshes
-        //   _that.skeletons = result.skeletons
-        //   _that.transformNodes = result.transformNodes
-        //   console.log(_that.transformNodes, 'transformNodes')
-        //   var rightRoot = _that.scene.getNodeByName('Armature')
-        //   console.log(rightRoot)
-        //   // rightRoot.rotationQuaternion = new BABYLON.Vector3(0, Math.PI, 0).toQuaternion()
-
-        //   // rightRoot.position.x = 10000
-        //   rightRoot.position.x = 2
-        // })
-
         // 点击事件
         // scene.onPointerObservable.add(pointerInfo => {
         //   const { type, event, pickInfo } = pointerInfo
