@@ -76,9 +76,9 @@ export default {
         // console.log(_that.cameraData)
         if (_that.cameraData) {
           // 相机空间坐标
-          camera.position.x = _that.cameraData[0] * 1
-          camera.position.y = _that.cameraData[1] * 1
-          camera.position.z = _that.cameraData[2] * 100
+          camera.position.x = _that.cameraData[0] * 40
+          camera.position.y = -_that.cameraData[2] * 40
+          camera.position.z = _that.cameraData[1] * 40
           // 相机角度
           const Q = new BABYLON.Quaternion(-_that.cameraData[4], _that.cameraData[5], -_that.cameraData[6], _that.cameraData[3])
           camera.rotationQuaternion = Q
