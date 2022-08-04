@@ -27,7 +27,7 @@ const createWindow = () => {
 }
 app.whenReady().then(() => {
   // 注册一个'CommandOrControl+Esc' 快捷键监听器
-  const ret = globalShortcut.register('CommandOrControl+Esc', () => {
+  const ret = globalShortcut.registerAll(['CommandOrControl+Esc', 'Home'], () => {
     console.log('CommandOrControl+Esc is pressed')
     // 触发后 退出应用
     app.quit()
@@ -44,7 +44,7 @@ app.whenReady().then(() => {
 })
 app.on('will-quit', () => {
   // 注销快捷键
-  globalShortcut.unregister('CommandOrControl+Esc')
+  globalShortcut.unregisterAll()
 })
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
