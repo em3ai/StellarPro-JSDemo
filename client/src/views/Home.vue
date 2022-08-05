@@ -1,6 +1,6 @@
 <!--
  * @Date: 2022-05-19 10:35:55
- * @LastEditTime: 2022-08-02 13:47:32
+ * @LastEditTime: 2022-08-05 10:06:35
  * @Description: Modify here please
  * @FilePath: /StellarPro-JSDemo/client/src/views/Home.vue
 -->
@@ -36,7 +36,11 @@ export default {
       deviceDisconnect: null,
       deviceDisconnectFlag: false,
       noService: null,
-      noServiceFlag: false
+      noServiceFlag: false,
+      leftRoot: null,
+      leftBone: null,
+      rightRoot: null,
+      rightBone: null
     }
   },
    watch: {
@@ -155,10 +159,12 @@ export default {
           _that.transformNodes = result.transformNodes
 
           // 左右手 默认不在视野内
-          var leftRoot = _that.scene.getNodeByName('Armature.001')
-          leftRoot.position.x = 10000
-          var rightRoot = _that.scene.getNodeByName('Armature')
-          rightRoot.position.x = 10000
+          _that.leftRoot = _that.scene.getNodeByName('Armature.001')
+          _that.leftRoot.position.x = 10000
+          _that.leftBone = _that.leftRoot.getChildTransformNodes(false)
+          _that.rightRoot = _that.scene.getNodeByName('Armature')
+          _that.rightRoot.position.x = 10000
+          _that.rightBone = _that.rightRoot.getChildTransformNodes(false)
         })
         // 点击事件
         // scene.onPointerObservable.add(pointerInfo => {
@@ -233,7 +239,7 @@ export default {
         scene.registerBeforeRender(function () {
           // console.log(_that.handInfo)
           // 一、生成左手
-          if (_that.handInfo && _that.handInfo.left_info && Number(_that.handInfo.left_info.confidence) > 0) {
+          if (_that.handInfo && _that.handInfo.left_info && Number(_that.handInfo.left_info.confidence) > 0 && _that.leftRoot) {
             // 1. 渲染21个指关节
             _that.handInfo && _that.handInfo.left_info && _that.handInfo.left_info.keypoints && _that.handInfo.left_info.keypoints.map((item, index) => {
               handLeft[index].isVisible = true
@@ -245,19 +251,17 @@ export default {
             var points = _that.handInfo.left_info.keypoints
             // 最新代码
             var angles = _that.handInfo.left_info.angles
-            var leftRoot = _that.scene.getNodeByName('Armature.001')
-            var leftBone = leftRoot && leftRoot.getChildTransformNodes(false)
             // 控制根节点移动
-            leftRoot.scaling = new BABYLON.Vector3(1, -1, 1)
-            leftRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
+            _that.leftRoot.scaling = new BABYLON.Vector3(1, -1, 1)
+            _that.leftRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
             // 控制根节点旋转
             let V = new BABYLON.Quaternion(_that.handInfo.left_info.wrist[1], _that.handInfo.left_info.wrist[2], _that.handInfo.left_info.wrist[3], _that.handInfo.left_info.wrist[0])
             V = V.toEulerAngles()
             V.x = V.x + Math.PI
-            leftRoot.rotationQuaternion = new BABYLON.Vector3(V.x, -V.y, V.z).toQuaternion()
+            _that.leftRoot.rotationQuaternion = new BABYLON.Vector3(V.x, -V.y, V.z).toQuaternion()
             // 控制每个手指节点
             let Q = null
-            leftBone && leftBone.map(item => {
+            _that.leftBone && _that.leftBone.map(item => {
               _that.matchLeftHand(item, angles, Q)
             })
              // 2. 创建 射线
@@ -328,16 +332,15 @@ export default {
             }
           } else {
             leftRayHelper && leftRayHelper.dispose()
-            // TODO 让模型消失
+            // 让模型消失
             // handLeft.map((item) => {
             //   item.isVisible = false
             // })
             // 左右手 默认不在视野内
-            var leftRoot = _that.scene.getNodeByName('Armature.001')
-            leftRoot && (leftRoot.position.x = 10000)
+            _that.leftRoot && (_that.leftRoot.position.x = 10000)
           }
           // 二、 生成右手
-          if (_that.handInfo && _that.handInfo.right_info && Number(_that.handInfo.right_info.confidence) > 0) {
+          if (_that.handInfo && _that.handInfo.right_info && Number(_that.handInfo.right_info.confidence) > 0 && _that.rightRoot) {
             // 1. 渲染21个指关节
             _that.handInfo && _that.handInfo.right_info && _that.handInfo.right_info.keypoints && _that.handInfo.right_info.keypoints.map((item, index) => {
               handRight[index].isVisible = true
@@ -349,21 +352,19 @@ export default {
             var points = _that.handInfo.right_info.keypoints
             // 最新代码
             var angles = _that.handInfo.right_info.angles
-            var rightRoot = _that.scene.getNodeByName('Armature')
-            var rightBone = rightRoot && rightRoot.getChildTransformNodes(false)
             // 控制根节点移动
             // 右手配合旋转 ==> 手心手背问题
-            rightRoot.scaling = new BABYLON.Vector3(1, -1, -1)
-            rightRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
+            _that.rightRoot.scaling = new BABYLON.Vector3(1, -1, -1)
+            _that.rightRoot.position = new BABYLON.Vector3(-points[9].x * 20, points[9].y * 20, points[9].z * 20)
             // 控制根节点旋转
             let V = new BABYLON.Quaternion(_that.handInfo.right_info.wrist[1], _that.handInfo.right_info.wrist[2], _that.handInfo.right_info.wrist[3], _that.handInfo.right_info.wrist[0])
             V = V.toEulerAngles()
             V.x = V.x + Math.PI
             V.y = V.y + Math.PI
-            rightRoot.rotationQuaternion = new BABYLON.Vector3(-V.x, -V.y, -V.z).toQuaternion()
+            _that.rightRoot.rotationQuaternion = new BABYLON.Vector3(-V.x, -V.y, -V.z).toQuaternion()
             // 控制每个手指节点
             let Q = null
-            rightBone && rightBone.map(item => {
+            _that.rightBone && _that.rightBone.map(item => {
               _that.matchRightHand(item, angles, Q)
             })
 
@@ -437,13 +438,12 @@ export default {
           } else {
             // 释放射线
             rightRayHelper && rightRayHelper.dispose()
-            // TODO 让模型消失
+            // 让模型消失
             // handRight.map((item) => {
             //   item.isVisible = false
             // })
             // 左右手 默认不在视野内
-            var rightRoot = _that.scene.getNodeByName('Armature')
-            rightRoot && (rightRoot.position.x = 10000)
+            _that.rightRoot && (_that.rightRoot.position.x = 10000)
           }
         })
         return scene
@@ -612,7 +612,7 @@ export default {
     // 右手模型角度
     matchRightHand(item, angles, Q) {
       switch (item.id) { 
-          case 'Bone.016': // 拇指 TODO 拇指
+          case 'Bone.016': // 拇指
             var z = -angles[1] + Math.PI / 4
             var x = -angles[0] * 0.7
             Q = new BABYLON.Vector3(x, 0, z).toQuaternion()
